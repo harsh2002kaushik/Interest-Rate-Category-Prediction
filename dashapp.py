@@ -23,6 +23,7 @@ app.layout = html.Div(
         html.H1('Enter the details to predict the type of interest rate that will be applied on you',
                 style = {
                     'textAlign':'center',
+			  'color': '#7fDBFF'
                     }
                 ),
         html.Hr(),
@@ -35,9 +36,9 @@ app.layout = html.Div(
         html.P('Income_Verified'),
         dcc.Input(id='Income_Verified', type='text', placeholder='Income_Verified'),
         html.Hr(),
-        html.P('Purpose_Of_Loan'),
-        dcc.Input(id='Purpose_Of_Loan', type='text', placeholder='Purpose_Of_Loan'),
-        html.Hr(),
+        #html.P('Purpose_Of_Loan'),
+        #dcc.Input(id='Purpose_Of_Loan', type='text', placeholder='Purpose_Of_Loan'),
+        #html.Hr(),
         html.P('Debt'),
         dcc.Input(id='Debt', type='text', placeholder='Debt'),
         html.Hr(),
@@ -61,6 +62,7 @@ app.layout = html.Div(
         html.Br(),
         html.P(id='model_output', style = {
             'textAlign': 'center',
+		'color': '#7fDBFF'
             })
         ])
 
@@ -69,7 +71,7 @@ app.layout = html.Div(
     Input(component_id='Loan_Amount_Requested', component_property='value'),
     Input(component_id='Home_Owner', component_property='value'),
     Input(component_id='Income_Verified', component_property='value'),
-    Input(component_id='Purpose_Of_Loan', component_property='value'),
+    #Input(component_id='Purpose_Of_Loan', component_property='value'),
     Input(component_id='Debt', component_property='value'),
     Input(component_id='Inquiries_Last_6Mo', component_property='value'),
     Input(component_id='Number_Open_Accounts', component_property='value'),
@@ -78,6 +80,8 @@ app.layout = html.Div(
     Input(component_id='Length_Employed', component_property='value'),
     Input(component_id='get_interest', component_property='n_clicks')
     )
+
+Purpose_Of_Loan = 2
 
 def get_interest(Loan_Amount_Requested, Home_Owner, Income_Verified, Purpose_Of_Loan, Debt, Inquiries_Last_6Mo, Number_Open_Accounts, Total_Accounts, Annual_Income, Length_Employed, get_interest):
     if get_interest>0:
@@ -104,10 +108,17 @@ def get_interest(Loan_Amount_Requested, Home_Owner, Income_Verified, Purpose_Of_
         array = [[Loan_Amount_Requested, Home_Owner, Income_Verified, Purpose_Of_Loan, Debt_To_Income, Inquiries_Last_6Mo, Number_Open_Accounts, Total_Accounts, Annual_Income, Length_Employed, Debt, Asset_Score, Savings, Income_By_Loan]]
         rate = model.predict(array)[0]
         
-        return rate
+        a = ''
+	    if rate == 0:
+        	a = 'Low Range'
+        if rate == 1:
+        	a = 'Mid Range'
+        if rate == 2:
+        	a = 'High Range'
+        
+        return (Interest Rate will be of {}).format(a)
     
 
 if __name__=='__main__':
     PORT = 3000
     app.run_server(port = PORT)
-        
